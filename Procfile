@@ -1,0 +1,1 @@
+web: gunicorn flock.wsgi --log-file -
