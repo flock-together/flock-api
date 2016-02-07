@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
+from .models import Event
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -22,3 +24,9 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
 
         return user
+
+
+class EventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = ('title', 'date')

@@ -1,8 +1,9 @@
 from django.contrib.auth.models import User
 from rest_framework import generics
 
-from .permissions import IsAnonCreate
-from .serializers import UserSerializer
+from .models import Event
+from .permissions import IsAnonCreate, IsOwnerOrReadOnly
+from .serializers import UserSerializer, EventSerializer
 
 
 class UserList(generics.ListCreateAPIView):
@@ -21,3 +22,18 @@ class UserDetail(generics.RetrieveAPIView):
     def get_queryset(self):
         user_id = self.request.user.id
         return User.objects.filter(id=user_id)
+
+
+class EventList(generics.ListCreateAPIView):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
+    permission_classes = (IsOwnerOrReadOnly, )
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
+class EventDetail(generics.RetrieveAPIView):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
+    permission_classes = (IsOwnerOrReadOnly, )
